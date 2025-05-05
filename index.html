@@ -7,16 +7,12 @@
   <style>
     * { box-sizing: border-box; }
     body {
-      font-family: 'Helvetica Neue', sans-serif;
+      font-family: 'Helvetica Neue', 'Noto Sans JP', sans-serif;
       background: #f7f9fa;
       margin: 0;
       padding: 20px;
       color: #333;
       text-align: center;
-    }
-    h1 {
-      font-size: 22px;
-      margin-bottom: 20px;
     }
     #loading {
       font-size: 16px;
@@ -29,7 +25,7 @@
     }
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      grid-template-columns: 1fr;
       gap: 20px;
       max-width: 1000px;
       margin: 0 auto;
@@ -47,20 +43,65 @@
     .card img {
       width: 80px;
       height: auto;
-      margin-bottom: 12px;
-    }
-    .name {
-      font-weight: bold;
-      font-size: 16px;
       margin-bottom: 8px;
     }
-    .status {
+    .unit-label {
       font-size: 14px;
+      color: #555;
+      text-align: left;
+    }
+    .status-line {
+      font-size: 14px;
+      font-weight: bold;
+      margin: 6px 0 0 0;
+    }
+    .status-working { color: #4caf50; }
+    .status-standby { color: #2196f3; }
+    .circle-progress {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: conic-gradient(#4caf50 0% 0%, #eee 0% 100%);
+      margin: 10px auto;
+      position: relative;
+    }
+    .circle-progress::after {
+      content: attr(data-progress) '%';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 14px;
+      color: #333;
+      font-weight: bold;
+    }
+    .time-info {
+      font-size: 14px;
+      margin: 4px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .time-label {
+      text-align: left;
+      flex: 1;
+    }
+    .time-value {
+      text-align: center;
+      flex: 1;
+      color: #4caf50;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #ddd;
+      margin: 10px 0;
     }
   </style>
 </head>
 <body>
-  <h1>洗濯機 稼働状況モニター</h1>
+  <div style="text-align: left; font-family: 'Helvetica Neue', 'Noto Sans JP', sans-serif; font-weight: 300; font-size: 16px; line-height: 1.4; margin-bottom: 20px;">
+    BASE LAYER HOTEL<br>NAGOYA NISHIKI
+  </div>
   <div id="loading">
     Now Loading...<br>
     <img src="https://raw.githubusercontent.com/ysakuraigreening/washing-machine-icons/main/now_loading_spinner_only.gif" alt="Loading">
@@ -68,9 +109,10 @@
   <div class="grid" id="machineGrid" style="display: none;"></div>
 
   <script>
-    const API_URL = 'https://script.google.com/macros/s/AKfycbx2t6Rr29dXOXvOwFrneeVGVvDV104kDKKgCOzkAi2IMEfSIhd8Zf-GugQbVKdMo0psXQ/exec';
+    const API_URL = 'https://script.google.com/macros/s/AKfycbzJ-eLITHXHGKyLh0MVxyLK6MDFPulPJgC2vF1k7TLaVM3_Hi84TnW1vFolhi7pj9e59Q/exec';
     const ICON_RUNNING = 'https://raw.githubusercontent.com/ysakuraigreening/washing-machine-icons/main/pictogram_rotating_drum%20(1).gif';
     const ICON_STOPPED = 'https://raw.githubusercontent.com/ysakuraigreening/washing-machine-icons/main/pictogram_stopped_final_clean%20(1).png';
+    const CYCLE_SECONDS = 40 * 60;
 
     async function fetchStatus() {
       const loading = document.getElementById('loading');
@@ -83,29 +125,48 @@
         data.forEach((device, index) => {
           const card = document.createElement('div');
           const isOn = device.power === 'on';
-          const isOff = device.power === 'off';
-          const isUnavailable = device.power === 'unavailable';
-          const isError = device.power === 'error';
           const imageUrl = isOn ? ICON_RUNNING : ICON_STOPPED;
 
-          let timeText = '停止中';
+          let statusText = isOn ? 'WORKING' : 'STAND-BY';
+          let statusClass = isOn ? 'status-working' : 'status-standby';
+
+          let elapsedMin = 0;
+          let progressPercent = 0;
+          let estimatedEnd = '';
+
           if (isOn && device.elapsedSeconds != null) {
-            const mins = Math.floor(device.elapsedSeconds / 60);
-            const secs = device.elapsedSeconds % 60;
-            timeText = `${mins}分${secs}秒稼働中`;
-          } else if (isUnavailable) {
-            timeText = '未接続';
-          } else if (isError) {
-            timeText = 'エラー';
+            elapsedMin = Math.floor(device.elapsedSeconds / 60);
+            let remaining = CYCLE_SECONDS - device.elapsedSeconds;
+            if (remaining < 0) {
+              remaining = 0;
+              progressPercent = 99;
+            } else {
+              progressPercent = Math.min((device.elapsedSeconds / CYCLE_SECONDS) * 100, 99);
+            }
+            const endTime = new Date(Date.now() + 3 * 60 * 1000);
+            estimatedEnd = `${endTime.getHours().toString().padStart(2, '0')}:${endTime.getMinutes().toString().padStart(2, '0')}`;
           }
 
-          const statusClass = isUnavailable ? 'unavailable' : (isError ? 'error' : (isOn ? 'on' : 'off'));
+          const progressDeg = progressPercent * 3.6;
 
-          card.className = `card ${statusClass}`;
+          card.className = `card ${isOn ? 'on' : 'off'}`;
           card.innerHTML = `
+            <div class="unit-label">UNIT_${String(index + 1).padStart(3, '0')}</div>
             <img src="${imageUrl}" alt="状態">
-            <div class="name">${device.name || (index + 1) + '番 洗濯機'}</div>
-            <div class="status">${timeText}</div>
+            <div class="status-line ${statusClass}">${statusText}</div>
+            <div class="circle-progress" style="background: conic-gradient(#4caf50 0% ${progressDeg}%, #eee ${progressDeg}% 100%)" data-progress="${Math.round(progressPercent)}"></div>
+            ${isOn ? `
+              <hr>
+              <div class="time-info">
+                <div class="time-label">稼働時間:</div>
+                <div class="time-value">${elapsedMin}分</div>
+              </div>
+              <hr>
+              <div class="time-info">
+                <div class="time-label">推定終了時刻:</div>
+                <div class="time-value">${estimatedEnd}</div>
+              </div>
+            ` : ''}
           `;
 
           grid.appendChild(card);
@@ -118,7 +179,7 @@
     }
 
     fetchStatus();
-    setInterval(fetchStatus, 180000); // 3分間隔で更新
+    setInterval(fetchStatus, 180000);
   </script>
 </body>
 </html>
