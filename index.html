@@ -1,102 +1,68 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BASE LAYER HOTEL LAUNDRY ROOM</title>
+  <title>洗濯機モニター</title>
   <style>
     body {
-      font-family: 'Helvetica Now', 'Helvetica Neue', 'Noto Sans JP', sans-serif;
+      font-family: 'Helvetica Neue', sans-serif;
       margin: 0;
-      padding: 20px;
-      background-color: #ffffff;
+      padding: 40px;
+      background-color: #f0f0f0;
       color: #333;
-      text-align: left;
+      text-align: center;
     }
 
     h1 {
-      font-size: 28px;
-      font-weight: 300;
-      text-align: left;
-      margin-left: 20px;
+      font-size: 24px;
+      margin-bottom: 40px;
     }
 
-    .loading {
-      text-align: center;
-      display: block;
-      width: 100%;
-      font-size: 32px;
-      font-weight: 300;
-      position: relative;
-      top: 20vh;
+    #loading {
+      font-size: 18px;
+      color: #666;
       margin-bottom: 30px;
-      color: #777;
     }
 
-    .dots::after {
-      content: '';
-      display: inline-block;
-      animation: dots 1.5s steps(3, end) infinite;
-    }
-
-    @keyframes dots {
-      0% { content: ''; }
-      33% { content: '.'; }
-      66% { content: '..'; }
-      100% { content: '...'; }
+    #loading img {
+      width: 50px;
+      margin-top: 10px;
     }
 
     .container {
-      display: grid;
-      grid-template-columns: 1fr;
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
       gap: 20px;
-      justify-items: center;
-    }
-
-    @media (min-width: 768px) {
-      .container {
-        grid-template-columns: 1fr 1fr;
-      }
     }
 
     .machine {
       background: #fff;
-      border-radius: 16px;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.1);
-      padding: 24px;
-      width: 100%;
-      box-sizing: border-box;
-      font-size: 20px;
-      text-align: center;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      padding: 20px;
+      width: 140px;
+      transition: transform 0.2s ease;
+    }
+
+    .machine:hover {
+      transform: translateY(-4px);
     }
 
     .icon img {
-      width: 120px;
+      width: 80px;
       height: auto;
+      margin-bottom: 10px;
+    }
+
+    .machine-number {
+      font-weight: bold;
+      font-size: 16px;
     }
 
     .status {
-      font-size: 18px;
-      margin-top: 8px;
-      color: #555;
-    }
-
-    .status-label {
       font-size: 14px;
-      color: #555;
-      text-align: left;
-      border-top: 1px solid #ccc;
-      padding-top: 10px;
       margin-top: 10px;
-    }
-
-    .status-value {
-      font-size: 18px;
-      font-family: 'Helvetica Now', 'Helvetica Neue', 'Noto Sans JP', sans-serif;
-      color: #4CAF50;
-      display: block;
-      text-align: center;
     }
 
     .status.on {
@@ -104,143 +70,70 @@
     }
 
     .status.off {
-      color: #2196F3; /* Blue for stand-by */
+      color: #999;
     }
 
-    .status.error, .status.errow {
+    .status.error {
       color: red;
-    }
-
-    .machine-number {
-      font-weight: bold;
-      font-size: 20px;
-      text-align: left;
-    }
-
-    .clock-progress {
-      position: relative;
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      background: #e0e0e0;
-      margin: 16px auto;
-    }
-
-    .circular-chart {
-      display: block;
-      margin: 0 auto;
-      max-width: 80px;
-      max-height: 80px;
-    }
-
-    .circle-bg {
-      fill: none;
-      stroke: #eee;
-      stroke-width: 2;
-    }
-
-    .circle {
-      fill: none;
-      stroke: #4CAF50;
-      stroke-width: 2;
-      stroke-linecap: round;
-      animation: progress 1s ease-out forwards;
-    }
-
-    .percentage {
-      fill: #333;
-      font-family: 'Helvetica Now', 'Helvetica Neue', 'Noto Sans JP', sans-serif;
-      font-size: 0.5em;
-      text-anchor: middle;
-    }
-
-    @keyframes progress {
-      0% {
-        stroke-dasharray: 0 100;
-      }
     }
   </style>
 </head>
 <body>
-  <h1>BASE LAYER HOTEL<br>LAUNDRY ROOM</h1>
-  <div class="loading">Now Loading<span class="dots"></span></div>
-  <div class="container" id="machines"></div>
+  <h1>洗濯機 稼働状況モニター</h1>
+
+  <div id="loading">
+    Now Loading...
+    <br>
+    <img src="https://raw.githubusercontent.com/ysakuraigreening/washing-machine-icons/main/now_loading_spinner_only.gif" alt="Loading">
+  </div>
+
+  <div class="container" id="machines" style="display: none;"></div>
 
   <script>
-    const API_URL = 'https://script.google.com/macros/s/AKfycbweBFSjm3BIR-Kb4OIWhu5vnDC-vD7nVwbIbFi1OmvMVkpGEURQrjy1n7jz9GbO80ibFg/exec';
-    const IMG_ACTIVE = 'https://raw.githubusercontent.com/ysakuraigreening/washing-machine-icons/main/pictogram_rotating_drum%20(1).gif';
-    const IMG_STOPPED = '	https://raw.githubusercontent.com/ysakuraigreening/washing-machine-icons/main/pictogram_stopped_final_clean%20(1).png';
-    const ESTIMATED_TOTAL_SECONDS = 1800;
+    const API_URL = 'https://script.google.com/macros/s/AKfycbzAQXa6JIKm_MZNmWH653p0rEHRaWANEQf3s_oYQWw3ztiBbriRE7e_nRU30lBTu4C7QA/exec'; // ← あなたのGAS URLに差し替え
+
+    const ICON_RUNNING = 'https://raw.githubusercontent.com/ysakuraigreening/washing-machine-icons/main/pictogram_rotating_drum%20(1).gif';
+    const ICON_STOPPED = 'https://raw.githubusercontent.com/ysakuraigreening/washing-machine-icons/main/pictogram_stopped_final_clean%20(1).png';
 
     async function loadStatus() {
       try {
         const res = await fetch(API_URL);
         const data = await res.json();
         const container = document.getElementById('machines');
-        const loading = document.querySelector('.loading');
         container.innerHTML = '';
-        if (loading) loading.style.display = 'none';
 
         data.forEach((device, index) => {
           const div = document.createElement('div');
           div.className = 'machine';
 
-          const powerState = (device.power || '').toLowerCase().trim();
-          let statusClass = 'off';
-          let label = 'errow';
-          let iconHtml = `<img src="${IMG_STOPPED}" alt="Stopped">`;
-          let timeText = '';
-          let endText = '';
-          let progressHtml = '';
+          const isOn = device.power === 'on';
+          const isOff = device.power === 'off';
+          const iconUrl = isOn ? ICON_RUNNING : ICON_STOPPED;
+          const statusClass = isOn ? 'on' : (isOff ? 'off' : 'error');
 
-          if (powerState === 'on') {
-            label = 'working';
-            iconHtml = `<img src="${IMG_ACTIVE}" alt="Running">`;
-            statusClass = 'on';
-            const elapsed = device.elapsedSeconds ?? 0;
-            const mins = Math.floor(elapsed / 60);
-            timeText = `${mins}分`;
-
-            let progress = Math.min((elapsed / ESTIMATED_TOTAL_SECONDS) * 100, 99);
-            if (elapsed >= ESTIMATED_TOTAL_SECONDS) {
-              progress = 99;
-            }
-
-            let endTime = new Date(Date.now() + (elapsed >= ESTIMATED_TOTAL_SECONDS ? 180 : ESTIMATED_TOTAL_SECONDS - elapsed) * 1000);
-            endText = endTime.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
-
-            progressHtml = `
-              <div class="clock-progress">
-                <svg viewBox="0 0 36 36" class="circular-chart">
-                  <path class="circle-bg" d="M18 2.0845
-                    a 15.9155 15.9155 0 0 1 0 31.831
-                    a 15.9155 15.9155 0 0 1 0 -31.831"/>
-                  <path class="circle" stroke-dasharray="${Math.round(progress)}, 100" d="M18 2.0845
-                    a 15.9155 15.9155 0 0 1 0 31.831
-                    a 15.9155 15.9155 0 0 1 0 -31.831"/>
-                  <text x="18" y="20.35" class="percentage">${Math.round(progress)}%</text>
-                </svg>
-              </div>`;
-          } else if (powerState === 'idle') {
-            label = 'standby';
-            timeText = '待機中';
-          } else if (powerState === 'off') {
-            label = 'stand-by';
+          let timeText = '停止中';
+          if (device.elapsedSeconds != null && isOn) {
+            const mins = Math.floor(device.elapsedSeconds / 60);
+            const secs = device.elapsedSeconds % 60;
+            timeText = `${mins}分${secs}秒`;
+          } else if (!isOff && !isOn) {
+            timeText = '取得失敗';
           }
 
           div.innerHTML = `
-            <div class="machine-number">Unit ${String(index + 1).padStart(3, '0')}</div>
-            <div class="icon">${iconHtml}</div>
-            <div class="status ${statusClass}">${label}</div>
-            ${progressHtml}
-            <div class="status-label">稼働時間：<span class="status-value">${timeText}</span></div>
-            ${powerState === 'on' ? `<div class="status-label">終了予定時刻：<span class="status-value">${endText}</span></div>` : ''}
+            <div class="icon"><img src="${iconUrl}" alt="${isOn ? '稼働中' : '停止中'}" /></div>
+            <div class="machine-number">${index + 1}番 洗濯機</div>
+            <div class="status ${statusClass}">稼働時間: ${timeText}</div>
           `;
 
           container.appendChild(div);
         });
+
+        // ローディングを非表示
+        document.getElementById('loading').style.display = 'none';
+        container.style.display = 'flex';
       } catch (e) {
-        console.error('データ取得失敗', e);
+        document.getElementById('loading').innerText = '読み込みエラーが発生しました。';
       }
     }
 
@@ -249,4 +142,3 @@
   </script>
 </body>
 </html>
-
