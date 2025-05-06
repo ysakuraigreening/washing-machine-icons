@@ -28,7 +28,7 @@
       grid-template-columns: 1fr;
       gap: 20px;
       max-width: 1000px;
-      margin: 0 auto;
+      margin: 0 auto 80px auto;
     }
     .card {
       background: white;
@@ -112,6 +112,35 @@
       border-top: 1px solid #ddd;
       margin: 10px 0;
     }
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: #000;
+      padding: 10px 0;
+      text-align: center;
+      z-index: 1000;
+    }
+    .footer-button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+    .footer-button:hover {
+      opacity: 0.7;
+    }
+    .footer-button svg {
+      width: 20px;
+      height: 20px;
+      fill: white;
+    }
   </style>
 </head>
 <body>
@@ -123,6 +152,13 @@
     <img src="https://raw.githubusercontent.com/ysakuraigreening/washing-machine-icons/main/now_loading_spinner_only.gif" alt="Loading">
   </div>
   <div class="grid" id="machineGrid" style="display: none;"></div>
+
+  <footer>
+    <button class="footer-button" onclick="window.close()">
+      <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+      ホーム
+    </button>
+  </footer>
 
   <script>
     const API_URL = 'https://script.google.com/macros/s/AKfycbyjn1G5-4x_GUWli1iHho2zN_kCJ5n5ZNM4RCPYhy_pxkuFPBvrfBd6lOPtaR4sNBqY3g/exec';
