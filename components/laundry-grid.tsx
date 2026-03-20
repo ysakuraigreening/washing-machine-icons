@@ -52,7 +52,7 @@ export function LaundryGrid() {
   }
 
   return (
-    <div className="flex flex-wrap gap-4">
+    <div className="flex flex-col gap-4">
       {data.machines.map((machine) => (
         <LaundryCard key={machine.id} machine={machine} />
       ))}

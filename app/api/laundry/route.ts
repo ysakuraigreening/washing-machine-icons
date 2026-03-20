@@ -46,11 +46,6 @@ export async function GET() {
           elapsedSeconds: 2100, // 35 minutes
           startTime: new Date(Date.now() - 2100000).toISOString(),
         },
-        {
-          id: "unit-004",
-          name: "UNIT_004",
-          power: "off",
-        },
       ],
       lastUpdated: new Date().toISOString(),
     };
