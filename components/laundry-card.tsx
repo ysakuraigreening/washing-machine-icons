@@ -15,14 +15,12 @@ export function LaundryCard({ machine }: LaundryCardProps) {
     ? Math.floor(machine.elapsedSeconds / 60)
     : 0;
 
-  // Calculate progress percentage
   const progressPercent = machine.elapsedSeconds
     ? Math.min((machine.elapsedSeconds / CYCLE_SECONDS) * 100, 99)
     : 0;
 
-  // Calculate estimated end time
   const getEstimatedEndTime = () => {
-    if (!isRunning || !machine.elapsedSeconds) return null;
+    if (!isRunning || !machine.elapsedSeconds) return "-";
     const remaining = CYCLE_SECONDS - machine.elapsedSeconds;
     const endTime = new Date(
       Date.now() + (remaining > 0 ? remaining : 180) * 1000
@@ -33,24 +31,21 @@ export function LaundryCard({ machine }: LaundryCardProps) {
       .padStart(2, "0")}`;
   };
 
-  // SVG circle calculations
-  const radius = 24;
+  const radius = 20;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference * (1 - progressPercent / 100);
 
   return (
     <div
-      className={`bg-card rounded-2xl p-4 transition-all duration-300 border-2 ${
+      className={`rounded-xl p-3 border-2 max-w-[220px] ${
         isRunning ? "border-success" : "border-border"
       }`}
     >
-      {/* Header Row - Unit Label & Status */}
-      <div className="flex justify-between items-center mb-3">
-        <p className="text-sm text-muted-foreground font-medium">
-          {machine.name}
-        </p>
+      {/* Header - Unit Name & Status */}
+      <div className="flex justify-between items-center mb-2">
+        <span className="text-xs text-muted-foreground">{machine.name}</span>
         <span
-          className={`text-sm font-bold ${
+          className={`text-xs font-bold ${
             isRunning ? "text-success" : "text-muted-foreground"
           }`}
         >
@@ -58,10 +53,10 @@ export function LaundryCard({ machine }: LaundryCardProps) {
         </span>
       </div>
 
-      {/* Main Content Row - Icon & Progress */}
-      <div className="flex items-center gap-4 mb-4">
-        {/* Laundry Icon */}
-        <div className="flex-shrink-0">
+      {/* Main - Icon & Progress */}
+      <div className="flex items-center justify-between mb-3">
+        {/* Laundry Icon with border */}
+        <div className="border border-border rounded-lg p-2">
           <Image
             src={
               isRunning
@@ -69,8 +64,8 @@ export function LaundryCard({ machine }: LaundryCardProps) {
                 : "/images/laundry-stopped.png"
             }
             alt={isRunning ? "稼働中" : "待機中"}
-            width={72}
-            height={72}
+            width={48}
+            height={48}
             className="object-contain"
             unoptimized={isRunning}
             priority
@@ -78,27 +73,27 @@ export function LaundryCard({ machine }: LaundryCardProps) {
         </div>
 
         {/* Progress Circle */}
-        <div className="relative w-16 h-16 flex-shrink-0">
-          <svg className="w-16 h-16 -rotate-90" viewBox="0 0 60 60">
+        <div className="relative w-14 h-14">
+          <svg className="w-14 h-14 -rotate-90" viewBox="0 0 50 50">
             <circle
-              cx="30"
-              cy="30"
+              cx="25"
+              cy="25"
               r={radius}
               fill="none"
               stroke="currentColor"
-              strokeWidth="4"
+              strokeWidth="3"
               className="text-border"
             />
             {isRunning && (
               <circle
-                cx="30"
-                cy="30"
+                cx="25"
+                cy="25"
                 r={radius}
                 fill="none"
                 stroke="currentColor"
-                strokeWidth="4"
+                strokeWidth="3"
                 strokeLinecap="round"
-                className="text-success transition-all duration-500"
+                className="text-success"
                 style={{
                   strokeDasharray: circumference,
                   strokeDashoffset: offset,
@@ -107,25 +102,25 @@ export function LaundryCard({ machine }: LaundryCardProps) {
             )}
           </svg>
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-sm font-bold text-card-foreground">
+            <span className="text-xs font-bold">
               {isRunning ? `${Math.round(progressPercent)}%` : "0%"}
             </span>
           </div>
         </div>
       </div>
 
-      {/* Time Info Row */}
-      <div className="space-y-1 border-t border-border pt-3">
-        <div className="flex justify-between items-center text-sm">
+      {/* Time Info */}
+      <div className="space-y-1 text-xs">
+        <div className="flex justify-between">
           <span className="text-muted-foreground">稼働時間</span>
-          <span className={`font-bold ${isRunning ? "text-success" : "text-muted-foreground"}`}>
+          <span className={isRunning ? "text-success font-bold" : "text-muted-foreground"}>
             {isRunning ? `${elapsedMin}分` : "-"}
           </span>
         </div>
-        <div className="flex justify-between items-center text-sm">
+        <div className="flex justify-between">
           <span className="text-muted-foreground">推定終了</span>
-          <span className={`font-bold ${isRunning ? "text-success" : "text-muted-foreground"}`}>
-            {isRunning ? getEstimatedEndTime() : "-"}
+          <span className={isRunning ? "text-success font-bold" : "text-muted-foreground"}>
+            {getEstimatedEndTime()}
           </span>
         </div>
       </div>
