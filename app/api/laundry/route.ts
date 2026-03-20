@@ -37,11 +37,25 @@ export async function GET() {
         {
           id: "unit-002",
           name: "UNIT_002",
-          power: "off",
+          power: "on",
+          elapsedSeconds: 1200, // 20 minutes
+          startTime: new Date(Date.now() - 1200000).toISOString(),
         },
         {
           id: "unit-003",
           name: "UNIT_003",
+          power: "on",
+          elapsedSeconds: 1200, // 20 minutes
+          startTime: new Date(Date.now() - 1200000).toISOString(),
+        },
+        {
+          id: "unit-004",
+          name: "UNIT_004",
+          power: "off",
+        },
+        {
+          id: "unit-005",
+          name: "UNIT_005",
           power: "on",
           elapsedSeconds: 2100, // 35 minutes
           startTime: new Date(Date.now() - 2100000).toISOString(),

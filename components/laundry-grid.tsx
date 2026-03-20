@@ -12,7 +12,7 @@ export function LaundryGrid() {
     "/api/laundry",
     fetcher,
     {
-      refreshInterval: 30000, // Refresh every 30 seconds
+      refreshInterval: 30000,
       revalidateOnFocus: true,
     }
   );
@@ -51,11 +51,25 @@ export function LaundryGrid() {
     );
   }
 
+  // Split machines: first 2 for top row, rest for bottom column
+  const topRow = data.machines.slice(0, 2);
+  const bottomColumn = data.machines.slice(2);
+
   return (
     <div className="flex flex-col gap-4">
-      {data.machines.map((machine) => (
-        <LaundryCard key={machine.id} machine={machine} />
-      ))}
+      {/* Top row - 2 cards side by side */}
+      <div className="flex gap-4">
+        {topRow.map((machine) => (
+          <LaundryCard key={machine.id} machine={machine} />
+        ))}
+      </div>
+      
+      {/* Bottom column - remaining cards stacked */}
+      <div className="flex flex-col gap-4">
+        {bottomColumn.map((machine) => (
+          <LaundryCard key={machine.id} machine={machine} />
+        ))}
+      </div>
     </div>
   );
 }
