@@ -42,7 +42,7 @@ export function LaundryCard({ machine }: LaundryCardProps) {
       }`}
     >
       {/* Header - Unit Name & Status */}
-      <div className="flex items-center gap-4 mb-2">
+      <div className="flex items-center gap-2 mb-2">
         <span className="text-xs text-muted-foreground">{machine.name}</span>
         <span
           className={`text-xs font-bold ${
