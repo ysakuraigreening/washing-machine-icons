@@ -8,7 +8,7 @@ export default function Page() {
         {/* Left side - Title */}
         <div className="shrink-0">
           <h1 className="text-2xl font-bold tracking-wide text-foreground">
-            LAUNDRY
+            LAUNDRY_ROOM
           </h1>
         </div>
         
