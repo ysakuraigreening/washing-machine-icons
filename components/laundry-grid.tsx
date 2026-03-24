@@ -57,8 +57,8 @@ export function LaundryGrid() {
 
   return (
     <div className="flex flex-col gap-4">
-      {/* Top row - 2 cards aligned to the right */}
-      <div className="flex justify-end gap-4">
+      {/* Top row - 2 cards centered */}
+      <div className="flex justify-center gap-4">
         {topRow.map((machine) => (
           <LaundryCard key={machine.id} machine={machine} />
         ))}
