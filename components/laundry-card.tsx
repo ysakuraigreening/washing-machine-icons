@@ -31,18 +31,18 @@ export function LaundryCard({ machine }: LaundryCardProps) {
       .padStart(2, "0")}`;
   };
 
-  const radius = 20;
+  const radius = 18;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference * (1 - progressPercent / 100);
 
   return (
     <div
-      className={`rounded-xl p-3 border-2 max-w-[220px] ${
+      className={`rounded-xl p-2 border-2 w-[180px] ${
         isRunning ? "border-success" : "border-border"
       }`}
     >
       {/* Header - Unit Name & Status */}
-      <div className="flex items-center gap-2 mb-2">
+      <div className="flex items-center gap-3 mb-2">
         <span className="text-xs text-muted-foreground">{machine.name}</span>
         <span
           className={`text-xs font-bold ${
@@ -54,9 +54,9 @@ export function LaundryCard({ machine }: LaundryCardProps) {
       </div>
 
       {/* Main - Icon & Progress */}
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex items-center gap-3 mb-2">
         {/* Laundry Icon with border */}
-        <div className="border border-border rounded-lg p-2">
+        <div className="border border-border rounded-lg p-1.5">
           <Image
             src={
               isRunning
@@ -64,8 +64,8 @@ export function LaundryCard({ machine }: LaundryCardProps) {
                 : "/images/laundry-stopped.png"
             }
             alt={isRunning ? "稼働中" : "待機中"}
-            width={48}
-            height={48}
+            width={40}
+            height={40}
             className="object-contain"
             unoptimized={isRunning}
             priority
@@ -73,8 +73,8 @@ export function LaundryCard({ machine }: LaundryCardProps) {
         </div>
 
         {/* Progress Circle */}
-        <div className="relative w-14 h-14">
-          <svg className="w-14 h-14 -rotate-90" viewBox="0 0 50 50">
+        <div className="relative w-12 h-12">
+          <svg className="w-12 h-12 -rotate-90" viewBox="0 0 50 50">
             <circle
               cx="25"
               cy="25"
@@ -110,14 +110,14 @@ export function LaundryCard({ machine }: LaundryCardProps) {
       </div>
 
       {/* Time Info */}
-      <div className="space-y-1 text-xs">
-        <div className="flex justify-between">
+      <div className="space-y-0.5 text-xs">
+        <div className="flex items-center gap-3">
           <span className="text-muted-foreground">稼働時間</span>
           <span className={isRunning ? "text-success font-bold" : "text-muted-foreground"}>
             {isRunning ? `${elapsedMin}分` : "-"}
           </span>
         </div>
-        <div className="flex justify-between">
+        <div className="flex items-center gap-3">
           <span className="text-muted-foreground">推定終了</span>
           <span className={isRunning ? "text-success font-bold" : "text-muted-foreground"}>
             {getEstimatedEndTime()}
