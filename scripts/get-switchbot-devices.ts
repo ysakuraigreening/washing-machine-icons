@@ -16,8 +16,8 @@
 import crypto from "crypto";
 
 // ここにSwitchBotアプリから取得した値を入力
-const SWITCHBOT_TOKEN = "YOUR_TOKEN_HERE";
-const SWITCHBOT_SECRET = "YOUR_SECRET_HERE";
+const SWITCHBOT_TOKEN = "YOUR_TOKEN_HERc9edd70ed3691dd63f7c46a81d0eff5ec4408f4b7df119e3a17d8ed62b415ad81b19a771d59eb6663245551b23b0afe3E";
+const SWITCHBOT_SECRET = "238c91022f3be8023da0714ba64261d7";
 
 async function getDevices() {
   const t = Date.now().toString();
@@ -42,7 +42,7 @@ async function getDevices() {
 
   if (result.statusCode === 100) {
     console.log("\n=== SwitchBot デバイス一覧 ===\n");
-    
+
     if (result.body.deviceList && result.body.deviceList.length > 0) {
       console.log("【登録済みデバイス】");
       result.body.deviceList.forEach((device: any, index: number) => {
