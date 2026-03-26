@@ -64,6 +64,11 @@ export async function GET() {
     const token = process.env.SWITCHBOT_TOKEN;
     const secret = process.env.SWITCHBOT_SECRET;
 
+    // デバッグ: 環境変数の状態を確認
+    console.log("[v0] SWITCHBOT_TOKEN exists:", !!token);
+    console.log("[v0] SWITCHBOT_SECRET exists:", !!secret);
+    console.log("[v0] SWITCHBOT_DEVICE_001:", process.env.SWITCHBOT_DEVICE_001 || "not set");
+
     // 本番モード: SwitchBot APIを使用
     if (token && secret) {
       const machines: LaundryMachine[] = await Promise.all(
