@@ -90,11 +90,15 @@ export async function GET() {
             const status = await getDeviceStatus(device.deviceId, token, secret);
             console.log("[v0] SwitchBot API response for", device.name, ":", JSON.stringify(status));
             
-            // SwitchBotプラグの電力値で稼働判定
-            // 電力が一定値以上（例: 5W）なら稼働中と判断
-            const powerWatts = status.body?.power || 0;
-            const isRunning = powerWatts > 5;
-            console.log("[v0]", device.name, "power:", powerWatts, "W, isRunning:", isRunning);
+            // SwitchBotプラグミニの稼働判定
+            // power: "on"/"off" - プラグの電源状態
+            // electricCurrent: 電流値（mA）- 洗濯機が実際に動いているかの判定に使用
+            const powerState = status.body?.power;
+            const electricCurrent = status.body?.electricCurrent || 0;
+            
+            // プラグがONで、電流が流れている（100mA以上）なら稼働中と判断
+            const isRunning = powerState === "on" && electricCurrent > 100;
+            console.log("[v0]", device.name, "powerState:", powerState, "electricCurrent:", electricCurrent, "mA, isRunning:", isRunning);
 
             // 稼働開始/終了時刻の管理
             if (isRunning && !machineStartTimes.has(device.id)) {
