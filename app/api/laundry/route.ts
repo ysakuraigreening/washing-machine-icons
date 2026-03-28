@@ -96,8 +96,8 @@ export async function GET() {
             const powerState = status.body?.power;
             const electricCurrent = status.body?.electricCurrent || 0;
             
-            // プラグがONで、電流が流れている（100mA以上）なら稼働中と判断
-            const isRunning = powerState === "on" && electricCurrent > 100;
+            // プラグがONで、電流が流れている（20mA以上）なら稼働中と判断
+            const isRunning = powerState === "on" && electricCurrent > 20;
             console.log("[v0]", device.name, "powerState:", powerState, "electricCurrent:", electricCurrent, "mA, isRunning:", isRunning);
 
             // 稼働開始/終了時刻の管理
