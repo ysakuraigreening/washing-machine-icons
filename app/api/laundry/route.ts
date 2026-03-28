@@ -71,9 +71,12 @@ export async function GET() {
 
     // 本番モード: SwitchBot APIを使用
     if (token && secret) {
+      console.log("[v0] Running in production mode - SwitchBot API");
+      
       const machines: LaundryMachine[] = await Promise.all(
         LAUNDRY_DEVICES.map(async (device) => {
           if (!device.deviceId) {
+            console.log("[v0] Device ID not set for:", device.name);
             // デバイスIDが設定されていない場合はオフとして扱う
             return {
               id: device.id,
@@ -83,12 +86,15 @@ export async function GET() {
           }
 
           try {
+            console.log("[v0] Fetching status for:", device.name, "deviceId:", device.deviceId);
             const status = await getDeviceStatus(device.deviceId, token, secret);
+            console.log("[v0] SwitchBot API response for", device.name, ":", JSON.stringify(status));
             
             // SwitchBotプラグの電力値で稼働判定
             // 電力が一定値以上（例: 5W）なら稼働中と判断
             const powerWatts = status.body?.power || 0;
             const isRunning = powerWatts > 5;
+            console.log("[v0]", device.name, "power:", powerWatts, "W, isRunning:", isRunning);
 
             // 稼働開始/終了時刻の管理
             if (isRunning && !machineStartTimes.has(device.id)) {
