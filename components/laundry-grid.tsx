@@ -64,8 +64,8 @@ export function LaundryGrid() {
         ))}
       </div>
       
-      {/* Bottom column - remaining cards stacked, aligned left */}
-      <div className="flex flex-col gap-4 items-start">
+      {/* Bottom column - remaining cards stacked, aligned left with negative margin */}
+      <div className="flex flex-col gap-4 -ml-24">
         {bottomColumn.map((machine) => (
           <LaundryCard key={machine.id} machine={machine} />
         ))}

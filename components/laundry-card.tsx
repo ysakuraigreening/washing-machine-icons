@@ -110,17 +110,11 @@ export function LaundryCard({ machine }: LaundryCardProps) {
       </div>
 
       {/* Time Info */}
-      <div className="space-y-0.5 text-xs">
+      <div className="text-xs">
         <div className="flex items-center gap-3">
           <span className="text-muted-foreground">稼働時間</span>
           <span className={isRunning ? "text-success font-bold" : "text-muted-foreground"}>
             {isRunning ? `${elapsedMin}分` : "-"}
-          </span>
-        </div>
-        <div className="flex items-center gap-3">
-          <span className="text-muted-foreground">推定終了</span>
-          <span className={isRunning ? "text-success font-bold" : "text-muted-foreground"}>
-            {getEstimatedEndTime()}
           </span>
         </div>
       </div>
