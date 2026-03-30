@@ -4,16 +4,21 @@ import type { LaundryStatus, LaundryMachine } from "@/types/laundry";
 import {
   getMachineStartTime,
   setMachineStartTime,
-  clearMachineStartTime,
+  updatePowerState,
+  getPreviousProgress,
+  savePreviousProgress,
+  resetMachineState,
 } from "@/lib/machine-state";
+import { resolveLaundryStatus } from "@/lib/laundry-progress";
 
 const SWITCHBOT_API_URL = "https://api.switch-bot.com/v1.1";
+
+// 通電OFF安定判定の閾値（秒）- 完了判定後にリセット
+const OFF_STABLE_THRESHOLD_FOR_RESET = 90;
 
 // ========================================
 // 本番環境設定: SwitchBotデバイスIDを設定
 // ========================================
-// 各ランドリーマシンに接続されたSwitchBotプラグのデバイスIDを設定してください
-// デバイスIDはSwitchBotアプリまたはAPIから取得できます
 const LAUNDRY_DEVICES = [
   { id: "unit-001", name: "UNIT_001", deviceId: process.env.SWITCHBOT_DEVICE_001 || "" },
   { id: "unit-002", name: "UNIT_002", deviceId: process.env.SWITCHBOT_DEVICE_002 || "" },
@@ -65,20 +70,11 @@ export async function GET() {
     const token = process.env.SWITCHBOT_TOKEN;
     const secret = process.env.SWITCHBOT_SECRET;
 
-    // デバッグ: 環境変数の状態を確認
-    console.log("[v0] SWITCHBOT_TOKEN exists:", !!token);
-    console.log("[v0] SWITCHBOT_SECRET exists:", !!secret);
-    console.log("[v0] SWITCHBOT_DEVICE_001:", process.env.SWITCHBOT_DEVICE_001 || "not set");
-
     // 本番モード: SwitchBot APIを使用
     if (token && secret) {
-      console.log("[v0] Running in production mode - SwitchBot API");
-      
       const machines: LaundryMachine[] = await Promise.all(
         LAUNDRY_DEVICES.map(async (device) => {
           if (!device.deviceId) {
-            console.log("[v0] Device ID not set for:", device.name);
-            // デバイスIDが設定されていない場合はオフとして扱う
             return {
               id: device.id,
               name: device.name,
@@ -87,42 +83,56 @@ export async function GET() {
           }
 
           try {
-            console.log("[v0] Fetching status for:", device.name, "deviceId:", device.deviceId);
             const status = await getDeviceStatus(device.deviceId, token, secret);
-            console.log("[v0] SwitchBot API response for", device.name, ":", JSON.stringify(status));
             
-            // SwitchBotプラグミニの稼働判定
-            // power: "on"/"off" - プラグの電源状態
-            // electricCurrent: 電流値（mA）- 洗濯機が実際に動いているかの判定に使用
             const powerState = status.body?.power;
             const electricCurrent = status.body?.electricCurrent || 0;
             
-            // プラグがONで、電流が流れている（20mA以上）なら稼働中と判断
-            const isRunning = powerState === "on" && electricCurrent > 20;
-            console.log("[v0]", device.name, "powerState:", powerState, "electricCurrent:", electricCurrent, "mA, isRunning:", isRunning);
+            // プラグがONで、電流が流れている（20mA以上）なら通電中と判断
+            const isPowerOn = powerState === "on" && electricCurrent > 20;
 
-            // 稼働開始/終了時刻の管理（永続化ストレージを使用）
+            // 安定時間を更新・取得
+            const { onStableSeconds, offStableSeconds } = updatePowerState(device.id, isPowerOn);
+
+            // 稼働開始時刻の管理
             const existingStartTime = getMachineStartTime(device.id);
             
-            if (isRunning && !existingStartTime) {
-              // 稼働開始: 開始時刻を記録
+            if (isPowerOn && !existingStartTime && onStableSeconds >= 15) {
+              // 通電ON安定後に開始時刻を記録
               setMachineStartTime(device.id, new Date());
-            } else if (!isRunning && existingStartTime) {
-              // 稼働終了: 開始時刻をクリア
-              clearMachineStartTime(device.id);
             }
 
             const startTime = getMachineStartTime(device.id);
             const elapsedSeconds = startTime
               ? Math.floor((Date.now() - startTime.getTime()) / 1000)
-              : undefined;
+              : 0;
+
+            // 進捗計算用の入力を作成
+            const previousProgress = getPreviousProgress(device.id);
+            const statusResult = resolveLaundryStatus({
+              isPowerOn,
+              elapsedSeconds,
+              onStableSeconds,
+              offStableSeconds,
+              previousProgress,
+            });
+
+            // 進捗率を保存（逆戻り防止用）
+            savePreviousProgress(device.id, statusResult.progress);
+
+            // 完了状態でOFF安定が閾値を超えたらリセット
+            if (statusResult.state === "completed" && offStableSeconds >= OFF_STABLE_THRESHOLD_FOR_RESET + 60) {
+              resetMachineState(device.id);
+            }
 
             return {
               id: device.id,
               name: device.name,
-              power: isRunning ? "on" : "off",
+              power: isPowerOn ? "on" : "off",
               elapsedSeconds,
               startTime: startTime?.toISOString(),
+              onStableSeconds,
+              offStableSeconds,
             } as LaundryMachine;
           } catch (error) {
             console.error(`Error fetching status for ${device.name}:`, error);
@@ -144,7 +154,6 @@ export async function GET() {
     }
 
     // デモモード: モックデータを返す
-    console.log("[v0] Running in demo mode - SwitchBot credentials not configured");
     const mockData: LaundryStatus = {
       machines: [
         {
@@ -153,32 +162,43 @@ export async function GET() {
           power: "on",
           elapsedSeconds: 1200,
           startTime: new Date(Date.now() - 1200000).toISOString(),
+          onStableSeconds: 1200,
+          offStableSeconds: 0,
         },
         {
           id: "unit-002",
           name: "UNIT_002",
           power: "on",
-          elapsedSeconds: 1200,
-          startTime: new Date(Date.now() - 1200000).toISOString(),
+          elapsedSeconds: 4200,
+          startTime: new Date(Date.now() - 4200000).toISOString(),
+          onStableSeconds: 4200,
+          offStableSeconds: 0,
         },
         {
           id: "unit-003",
           name: "UNIT_003",
           power: "on",
-          elapsedSeconds: 1200,
-          startTime: new Date(Date.now() - 1200000).toISOString(),
+          elapsedSeconds: 5400,
+          startTime: new Date(Date.now() - 5400000).toISOString(),
+          onStableSeconds: 5400,
+          offStableSeconds: 0,
         },
         {
           id: "unit-004",
           name: "UNIT_004",
           power: "off",
+          elapsedSeconds: 0,
+          onStableSeconds: 0,
+          offStableSeconds: 0,
         },
         {
           id: "unit-005",
           name: "UNIT_005",
-          power: "on",
-          elapsedSeconds: 2100,
-          startTime: new Date(Date.now() - 2100000).toISOString(),
+          power: "off",
+          elapsedSeconds: 4920,
+          startTime: new Date(Date.now() - 4920000).toISOString(),
+          onStableSeconds: 0,
+          offStableSeconds: 120,
         },
       ],
       lastUpdated: new Date().toISOString(),
