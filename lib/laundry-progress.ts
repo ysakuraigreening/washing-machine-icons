@@ -102,8 +102,8 @@ export function resolveLaundryStatus(input: LaundryRuntimeInput): LaundryStatusR
       elapsedMinutes,
       remainingMin: 0,
       remainingMax: 0,
-      statusLabel: "完了",
-      helperText: "洗濯物を取り出してください",
+      statusLabel: "COMPLETE",
+      helperText: "Ready for pickup",
     };
   }
 
@@ -118,8 +118,8 @@ export function resolveLaundryStatus(input: LaundryRuntimeInput): LaundryStatusR
       elapsedMinutes: 0,
       remainingMin: null,
       remainingMax: null,
-      statusLabel: "待機中",
-      helperText: "稼働待ち",
+      statusLabel: "STAND-BY",
+      helperText: "Waiting",
     };
   }
 
@@ -153,8 +153,8 @@ export function resolveLaundryStatus(input: LaundryRuntimeInput): LaundryStatusR
       elapsedMinutes,
       remainingMin: remaining.min,
       remainingMax: remaining.max,
-      statusLabel: "終了間近",
-      helperText: remaining.min === null ? "終了判定中" : "まもなく終了見込み",
+      statusLabel: "FINISHING",
+      helperText: remaining.min === null ? "Checking..." : "Almost done",
     };
   }
 
@@ -165,7 +165,7 @@ export function resolveLaundryStatus(input: LaundryRuntimeInput): LaundryStatusR
     elapsedMinutes,
     remainingMin: remaining.min,
     remainingMax: remaining.max,
-    statusLabel: "運転中",
-    helperText: "推定進捗を表示中",
+    statusLabel: "WORKING",
+    helperText: "",
   };
 }
