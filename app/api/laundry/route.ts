@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
 import type { LaundryStatus, LaundryMachine } from "@/types/laundry";
+import {
+  getMachineStartTime,
+  setMachineStartTime,
+  clearMachineStartTime,
+} from "@/lib/machine-state";
 
 const SWITCHBOT_API_URL = "https://api.switch-bot.com/v1.1";
 
@@ -16,10 +21,6 @@ const LAUNDRY_DEVICES = [
   { id: "unit-004", name: "UNIT_004", deviceId: process.env.SWITCHBOT_DEVICE_004 || "" },
   { id: "unit-005", name: "UNIT_005", deviceId: process.env.SWITCHBOT_DEVICE_005 || "" },
 ];
-
-// 稼働開始時刻を保持するためのインメモリストア
-// 本番環境ではRedisやデータベースを使用することを推奨
-const machineStartTimes: Map<string, Date> = new Map();
 
 // SwitchBot API署名生成
 function generateSignature(token: string, secret: string, timestamp: string, nonce: string): string {
@@ -100,14 +101,18 @@ export async function GET() {
             const isRunning = powerState === "on" && electricCurrent > 20;
             console.log("[v0]", device.name, "powerState:", powerState, "electricCurrent:", electricCurrent, "mA, isRunning:", isRunning);
 
-            // 稼働開始/終了時刻の管理
-            if (isRunning && !machineStartTimes.has(device.id)) {
-              machineStartTimes.set(device.id, new Date());
-            } else if (!isRunning && machineStartTimes.has(device.id)) {
-              machineStartTimes.delete(device.id);
+            // 稼働開始/終了時刻の管理（永続化ストレージを使用）
+            const existingStartTime = getMachineStartTime(device.id);
+            
+            if (isRunning && !existingStartTime) {
+              // 稼働開始: 開始時刻を記録
+              setMachineStartTime(device.id, new Date());
+            } else if (!isRunning && existingStartTime) {
+              // 稼働終了: 開始時刻をクリア
+              clearMachineStartTime(device.id);
             }
 
-            const startTime = machineStartTimes.get(device.id);
+            const startTime = getMachineStartTime(device.id);
             const elapsedSeconds = startTime
               ? Math.floor((Date.now() - startTime.getTime()) / 1000)
               : undefined;
