@@ -20,8 +20,8 @@ const OFF_STABLE_THRESHOLD_FOR_RESET = 90;
 // 本番環境設定: SwitchBotデバイスIDを設定
 // ========================================
 const LAUNDRY_DEVICES = [
-  { id: "unit-001", name: "UNIT_001", deviceId: process.env.SWITCHBOT_DEVICE_001 || "" },
-  { id: "unit-002", name: "UNIT_002", deviceId: process.env.SWITCHBOT_DEVICE_002 || "" },
+  { id: "unit-001", name: "UNIT_001", deviceId: process.env.SWITCHBOT_DEVICE_002 || "" },
+  { id: "unit-002", name: "UNIT_002", deviceId: process.env.SWITCHBOT_DEVICE_001 || "" },
   { id: "unit-003", name: "UNIT_003", deviceId: process.env.SWITCHBOT_DEVICE_003 || "" },
   { id: "unit-004", name: "UNIT_004", deviceId: process.env.SWITCHBOT_DEVICE_004 || "" },
   { id: "unit-005", name: "UNIT_005", deviceId: process.env.SWITCHBOT_DEVICE_005 || "" },
