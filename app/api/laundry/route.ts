@@ -72,9 +72,16 @@ export async function GET() {
 
     // 本番モード: SwitchBot APIを使用
     if (token && secret) {
+      console.log("[v0] SWITCHBOT_DEVICE_001:", process.env.SWITCHBOT_DEVICE_001 || "not set");
+      console.log("[v0] SWITCHBOT_DEVICE_002:", process.env.SWITCHBOT_DEVICE_002 || "not set");
+      console.log("[v0] SWITCHBOT_DEVICE_003:", process.env.SWITCHBOT_DEVICE_003 || "not set");
+      console.log("[v0] SWITCHBOT_DEVICE_004:", process.env.SWITCHBOT_DEVICE_004 || "not set");
+      console.log("[v0] SWITCHBOT_DEVICE_005:", process.env.SWITCHBOT_DEVICE_005 || "not set");
+      
       const machines: LaundryMachine[] = await Promise.all(
         LAUNDRY_DEVICES.map(async (device) => {
           if (!device.deviceId) {
+            console.log("[v0]", device.name, "has no deviceId configured");
             return {
               id: device.id,
               name: device.name,
@@ -83,14 +90,19 @@ export async function GET() {
           }
 
           try {
+            console.log("[v0] Fetching status for", device.name, "deviceId:", device.deviceId);
             const status = await getDeviceStatus(device.deviceId, token, secret);
+            console.log("[v0]", device.name, "API response:", JSON.stringify(status));
             
             const powerState = status.body?.power;
             const electricCurrent = status.body?.electricCurrent || 0;
             
+            console.log("[v0]", device.name, "powerState:", powerState, "electricCurrent:", electricCurrent);
+            
             // プラグがONで、電流が流れている（0.01A以上）なら通電中と判断
             // SwitchBot APIのelectricCurrentはA単位で返される
             const isPowerOn = powerState === "on" && electricCurrent > 0.01;
+            console.log("[v0]", device.name, "isPowerOn:", isPowerOn);
 
             // 安定時間を更新・取得
             const { onStableSeconds, offStableSeconds } = updatePowerState(device.id, isPowerOn);
