@@ -51,13 +51,13 @@ export function LaundryGrid() {
     );
   }
 
-  // Split machines: first 2 for top row, rest for bottom column
-  const topRow = data.machines.slice(0, 2);
+  // Split machines: first 2 for top row (reversed: 002 left, 001 right), rest for bottom column
+  const topRow = data.machines.slice(0, 2).reverse();
   const bottomColumn = data.machines.slice(2);
 
   return (
     <div className="flex flex-col gap-4">
-      {/* Top row - 2 cards centered */}
+      {/* Top row - 2 cards centered (UNIT_002 left, UNIT_001 right) */}
       <div className="flex justify-center gap-4">
         {topRow.map((machine) => (
           <LaundryCard key={machine.id} machine={machine} />
