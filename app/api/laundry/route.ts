@@ -20,11 +20,11 @@ const OFF_STABLE_THRESHOLD_FOR_RESET = 90;
 // 本番環境設定: SwitchBotデバイスIDを設定
 // ========================================
 const LAUNDRY_DEVICES = [
-  { id: "unit-001", name: "UNIT_001", deviceId: process.env.SWITCHBOT_DEVICE_002 || "" },
-  { id: "unit-002", name: "UNIT_002", deviceId: process.env.SWITCHBOT_DEVICE_001 || "" },
-  { id: "unit-003", name: "UNIT_003", deviceId: process.env.SWITCHBOT_DEVICE_003 || "" },
-  { id: "unit-004", name: "UNIT_004", deviceId: process.env.SWITCHBOT_DEVICE_004 || "" },
-  { id: "unit-005", name: "UNIT_005", deviceId: process.env.SWITCHBOT_DEVICE_005 || "" },
+  { id: "unit-001", name: "UNIT_001", deviceId: process.env.SWITCHBOT_DEVICE_002 || "", currentThreshold: 5 },
+  { id: "unit-002", name: "UNIT_002", deviceId: process.env.SWITCHBOT_DEVICE_001 || "", currentThreshold: 5 },
+  { id: "unit-003", name: "UNIT_003", deviceId: process.env.SWITCHBOT_DEVICE_003 || "", currentThreshold: 0.2 },
+  { id: "unit-004", name: "UNIT_004", deviceId: process.env.SWITCHBOT_DEVICE_004 || "", currentThreshold: 0.2 },
+  { id: "unit-005", name: "UNIT_005", deviceId: process.env.SWITCHBOT_DEVICE_005 || "", currentThreshold: 0.2 },
 ];
 
 // SwitchBot API署名生成
@@ -97,11 +97,11 @@ export async function GET() {
             const powerState = status.body?.power;
             const electricCurrent = status.body?.electricCurrent || 0;
             
-            console.log("[v0]", device.name, "powerState:", powerState, "electricCurrent:", electricCurrent);
+            console.log("[v0]", device.name, "powerState:", powerState, "electricCurrent:", electricCurrent, "threshold:", device.currentThreshold);
             
-            // プラグがONで、電流が流れている（0.01A以上）なら通電中と判断
-            // SwitchBot APIのelectricCurrentはA単位で返される
-            const isPowerOn = powerState === "on" && electricCurrent > 0.01;
+            // プラグがONで、電流が閾値以上なら通電中と判断
+            // UNIT_001/002: 5A以上、UNIT_003/004/005: 0.2A以上
+            const isPowerOn = powerState === "on" && electricCurrent >= device.currentThreshold;
             console.log("[v0]", device.name, "isPowerOn:", isPowerOn);
 
             // 安定時間を更新・取得
