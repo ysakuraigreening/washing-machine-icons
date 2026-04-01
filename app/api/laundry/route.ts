@@ -20,10 +20,10 @@ const OFF_STABLE_THRESHOLD_FOR_RESET = 90;
 // 本番環境設定: SwitchBotデバイスIDを設定
 // ========================================
 // 電流閾値はmA単位（SwitchBot APIはmAで返す）
-// UNIT_001/002: 5000mA (5A)以上、UNIT_003/004/005: 200mA (0.2A)以上
+// UNIT_001/002: 3000mA (3A)以上、UNIT_003/004/005: 200mA (0.2A)以上
 const LAUNDRY_DEVICES = [
-  { id: "unit-001", name: "UNIT_001", deviceId: process.env.SWITCHBOT_DEVICE_001 || "", currentThreshold: 5000 },
-  { id: "unit-002", name: "UNIT_002", deviceId: process.env.SWITCHBOT_DEVICE_002 || "", currentThreshold: 5000 },
+  { id: "unit-001", name: "UNIT_001", deviceId: process.env.SWITCHBOT_DEVICE_001 || "", currentThreshold: 3000 },
+  { id: "unit-002", name: "UNIT_002", deviceId: process.env.SWITCHBOT_DEVICE_002 || "", currentThreshold: 3000 },
   { id: "unit-003", name: "UNIT_003", deviceId: process.env.SWITCHBOT_DEVICE_003 || "", currentThreshold: 200 },
   { id: "unit-004", name: "UNIT_004", deviceId: process.env.SWITCHBOT_DEVICE_004 || "", currentThreshold: 200 },
   { id: "unit-005", name: "UNIT_005", deviceId: process.env.SWITCHBOT_DEVICE_005 || "", currentThreshold: 200 },
