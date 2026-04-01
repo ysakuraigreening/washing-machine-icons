@@ -42,6 +42,22 @@ function getStateColors(state: LaundryState) {
   }
 }
 
+// デバイスタイプに応じた画像パスを取得
+function getDeviceImages(machineId: string) {
+  // UNIT_001とUNIT_002はスチーマー画像を使用
+  if (machineId === "unit-001" || machineId === "unit-002") {
+    return {
+      running: "/images/steamer-running.gif",
+      stopped: "/images/steamer-stopped.png",
+    };
+  }
+  // その他は洗濯機画像を使用
+  return {
+    running: "/images/laundry-running.gif",
+    stopped: "/images/laundry-stopped.png",
+  };
+}
+
 export function LaundryCard({ machine }: LaundryCardProps) {
   const isPowerOn = machine.power === "on";
 
@@ -54,6 +70,7 @@ export function LaundryCard({ machine }: LaundryCardProps) {
   });
 
   const colors = getStateColors(status.state);
+  const images = getDeviceImages(machine.id);
 
   const radius = 18;
   const circumference = 2 * Math.PI * radius;
@@ -78,8 +95,8 @@ export function LaundryCard({ machine }: LaundryCardProps) {
           <Image
             src={
               isActive && status.state !== "completed"
-                ? "/images/laundry-running.gif"
-                : "/images/laundry-stopped.png"
+                ? images.running
+                : images.stopped
             }
             alt={status.statusLabel}
             width={40}
