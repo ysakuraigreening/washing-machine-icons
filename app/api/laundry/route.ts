@@ -88,8 +88,9 @@ export async function GET() {
             const powerState = status.body?.power;
             const electricCurrent = status.body?.electricCurrent || 0;
             
-            // プラグがONで、電流が流れている（20mA以上）なら通電中と判断
-            const isPowerOn = powerState === "on" && electricCurrent > 20;
+            // プラグがONで、電流が流れている（0.01A以上）なら通電中と判断
+            // SwitchBot APIのelectricCurrentはA単位で返される
+            const isPowerOn = powerState === "on" && electricCurrent > 0.01;
 
             // 安定時間を更新・取得
             const { onStableSeconds, offStableSeconds } = updatePowerState(device.id, isPowerOn);
