@@ -125,8 +125,8 @@ export function LaundryCard({ machine }: LaundryCardProps) {
       </div>
 
       {/* Time Info */}
-      <div className="text-xs text-center">
-        <div className="flex items-center justify-center gap-2">
+      <div className="text-xs">
+        <div className="flex items-center gap-2">
           <span className="text-muted-foreground">Elapsed</span>
           <span className={isActive ? `${colors.text} font-bold` : "text-muted-foreground"}>
             {isActive ? `${status.elapsedMinutes}min` : "-"}
@@ -136,7 +136,7 @@ export function LaundryCard({ machine }: LaundryCardProps) {
 
       {/* Helper Text */}
       {status.helperText && (
-        <div className={`text-xs mt-1 text-center ${colors.text}`}>
+        <div className={`text-xs mt-1 ${colors.text}`}>
           {status.helperText}
         </div>
       )}

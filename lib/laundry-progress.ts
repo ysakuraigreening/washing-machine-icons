@@ -93,25 +93,12 @@ export function resolveLaundryStatus(input: LaundryRuntimeInput): LaundryStatusR
 
   const elapsedMinutes = Math.floor(elapsedSeconds / 60);
 
-  // 1. completed判定（最優先）
-  // 通電OFFが90秒以上連続で続いたら完了
-  if (offStableSeconds >= OFF_STABLE_THRESHOLD) {
-    return {
-      state: "completed",
-      progress: 100,
-      elapsedMinutes,
-      remainingMin: 0,
-      remainingMax: 0,
-      statusLabel: "COMPLETE",
-      helperText: "Ready for pickup",
-    };
-  }
-
-  // 2. idle判定
-  // 開始条件（onStableSeconds >= 15）がまだ成立していない場合
-  const hasStarted = onStableSeconds >= ON_STABLE_THRESHOLD || elapsedSeconds > 0;
+  // 1. 稼働開始の判定
+  // elapsedSeconds > 0 = 以前に稼働を開始したことがある
+  const hasEverStarted = elapsedSeconds > 0;
   
-  if (!hasStarted && !isPowerOn) {
+  // 2. idle判定（一度も稼働開始していない場合）
+  if (!hasEverStarted && !isPowerOn) {
     return {
       state: "idle",
       progress: 0,
@@ -120,6 +107,20 @@ export function resolveLaundryStatus(input: LaundryRuntimeInput): LaundryStatusR
       remainingMax: null,
       statusLabel: "STAND-BY",
       helperText: "Waiting",
+    };
+  }
+
+  // 3. completed判定
+  // 一度稼働を開始した後、通電OFFが90秒以上連続で続いたら完了
+  if (hasEverStarted && offStableSeconds >= OFF_STABLE_THRESHOLD) {
+    return {
+      state: "completed",
+      progress: 100,
+      elapsedMinutes,
+      remainingMin: 0,
+      remainingMax: 0,
+      statusLabel: "COMPLETE",
+      helperText: "Ready for pickup",
     };
   }
 
