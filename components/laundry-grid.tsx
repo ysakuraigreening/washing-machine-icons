@@ -56,16 +56,16 @@ export function LaundryGrid() {
   const bottomColumn = data.machines.slice(2);
 
   return (
-    <div className="flex flex-col gap-4">
-      {/* Top row - 2 cards centered (UNIT_002 left, UNIT_001 right) */}
-      <div className="flex justify-center gap-4">
+    <div className="flex flex-col gap-6">
+      {/* Top row - 2 cards (UNIT_002 left, UNIT_001 right) */}
+      <div className="flex gap-6">
         {topRow.map((machine) => (
           <LaundryCard key={machine.id} machine={machine} />
         ))}
       </div>
       
-      {/* Bottom column - remaining cards stacked, aligned left with negative margin */}
-      <div className="flex flex-col gap-4 -ml-24">
+      {/* Bottom column - remaining cards stacked */}
+      <div className="flex flex-col gap-6">
         {bottomColumn.map((machine) => (
           <LaundryCard key={machine.id} machine={machine} />
         ))}
