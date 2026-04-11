@@ -8,8 +8,10 @@ export default function Page() {
         LAUNDRY_ROOM
       </h1>
       
-      {/* Laundry cards */}
-      <LaundryGrid />
+      {/* Laundry cards - centered container */}
+      <div className="max-w-3xl">
+        <LaundryGrid />
+      </div>
       
       {/* Portal instruction - bottom right */}
       <div className="fixed bottom-12 right-16 text-left font-helvetica text-black">
