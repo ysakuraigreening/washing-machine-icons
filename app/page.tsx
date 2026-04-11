@@ -16,22 +16,23 @@ export default function Page() {
         </p>
       </div>
 
-      {/* Laundry cards - centered */}
-      <div className="flex-1 flex items-center justify-center">
-        <LaundryGrid />
-      </div>
+      {/* Laundry cards with Price/Location - flex layout */}
+      <div className="flex-1 flex items-center justify-center gap-12">
+        {/* Price and Location Info - Left side */}
+        <div className="font-helvetica text-black">
+          <div className="text-2xl font-bold mb-4">PRICE</div>
+          <div className="text-2xl space-y-2 mb-6">
+            <p>洗濯＊＊＊円 | ＊＊分</p>
+            <p>洗濯乾燥＊＊＊円 | ＊＊分</p>
+            <p>追加乾燥＊＊＊円 | ＊＊分</p>
+          </div>
+          <div className="text-2xl">
+            LOCATION : HOTEL 2F
+          </div>
+        </div>
 
-      {/* Price and Location Info */}
-      <div className="font-helvetica text-black mt-8">
-        <div className="text-2xl font-bold mb-4">PRICE</div>
-        <div className="text-2xl space-y-2 mb-4">
-          <p>洗濯＊＊＊円 | ＊＊分</p>
-          <p>洗濯乾燥＊＊＊円 | ＊＊分</p>
-          <p>追加乾燥＊＊＊円 | ＊＊分</p>
-        </div>
-        <div className="text-2xl">
-          LOCATION : HOTEL 2F
-        </div>
+        {/* Laundry cards - Right side */}
+        <LaundryGrid />
       </div>
     </main>
   );
