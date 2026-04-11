@@ -82,8 +82,8 @@ export function LaundryCard({ machine }: LaundryCardProps) {
     <div className={`rounded-lg p-2 border-2 w-48 ${colors.border}`}>
       {/* Header - Unit Name & Status Badge */}
       <div className="flex items-center gap-1.5 mb-2">
-        <span className="text-3xl text-muted-foreground font-bold">{machine.name}</span>
-        <span className={`text-2xl font-bold px-2 py-0 rounded ${colors.badge}`}>
+        <span className="text-xl text-muted-foreground font-bold">{machine.name}</span>
+        <span className={`text-lg font-bold px-2 py-0 rounded ${colors.badge}`}>
           {status.statusLabel}
         </span>
       </div>
@@ -136,13 +136,13 @@ export function LaundryCard({ machine }: LaundryCardProps) {
             />
           </svg>
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-3xl font-bold">{Math.round(status.progress)}%</span>
+            <span className="text-2xl font-bold">{Math.round(status.progress)}%</span>
           </div>
         </div>
       </div>
 
       {/* Time Info */}
-      <div className="text-2xl">
+      <div className="text-base">
         <div className="flex items-center gap-1">
           <span className="text-muted-foreground">Elapsed</span>
           <span className={isActive ? `${colors.text} font-bold` : "text-muted-foreground"}>
@@ -153,7 +153,7 @@ export function LaundryCard({ machine }: LaundryCardProps) {
 
       {/* Helper Text */}
       {status.helperText && (
-        <div className={`text-2xl mt-1 ${colors.text}`}>
+        <div className={`text-base mt-1 ${colors.text}`}>
           {status.helperText}
         </div>
       )}
