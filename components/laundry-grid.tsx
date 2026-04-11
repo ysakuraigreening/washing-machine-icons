@@ -59,22 +59,23 @@ export function LaundryGrid() {
   const unit005 = data.machines.find((m) => m.id === "unit-005");
 
   return (
-    <div className="flex flex-col gap-8">
-      {/* 1行目: 空白 + UNIT_002 + UNIT_001 */}
-      <div className="flex gap-8">
-        <div className="w-[280px]" /> {/* 空白スペース */}
-        {unit002 && <LaundryCard machine={unit002} />}
-        {unit001 && <LaundryCard machine={unit001} />}
+    <div className="flex gap-6">
+      {/* Left column: UNIT_003, UNIT_004, UNIT_005 */}
+      <div className="flex flex-col gap-6">
+        {unit003 && <LaundryCard machine={unit003} />}
+        {unit004 && <LaundryCard machine={unit004} />}
+        {unit005 && <LaundryCard machine={unit005} />}
       </div>
 
-      {/* 2行目: UNIT_003 */}
-      {unit003 && <LaundryCard machine={unit003} />}
+      {/* Center column: UNIT_002 */}
+      <div>
+        {unit002 && <LaundryCard machine={unit002} />}
+      </div>
 
-      {/* 3行目: UNIT_004 */}
-      {unit004 && <LaundryCard machine={unit004} />}
-
-      {/* 4行目: UNIT_005 */}
-      {unit005 && <LaundryCard machine={unit005} />}
+      {/* Right column: UNIT_001 */}
+      <div>
+        {unit001 && <LaundryCard machine={unit001} />}
+      </div>
     </div>
   );
 }
