@@ -9,7 +9,7 @@ export default function Page() {
           LAUNDRY_ROOM
         </h1>
         <p className="text-2xl">
-          メニューに戻るにはリモコンボタンの【PORTAL】を押してください
+          メニューへ戻るにはリモコンボタンの【PORTAL】を押してください
         </p>
         <p className="text-2xl mt-1">
           Press the【PORTAL】button on the remote to return to the menu.
