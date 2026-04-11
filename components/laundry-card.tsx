@@ -88,10 +88,10 @@ export function LaundryCard({ machine }: LaundryCardProps) {
         </span>
       </div>
 
-      {/* Main - Icon & Progress */}
-      <div className="flex items-center gap-2 mb-2">
-        {/* Laundry Icon with border */}
-        <div className="border-2 border-border rounded p-0.5">
+      {/* Main - Icon (left) & Progress + Info (right) */}
+      <div className="flex items-stretch gap-3 mb-2">
+        {/* Laundry Icon - Left side, larger */}
+        <div className="border-2 border-border rounded p-1 flex items-center justify-center">
           <Image
             src={
               isActive && status.state !== "completed"
@@ -99,64 +99,67 @@ export function LaundryCard({ machine }: LaundryCardProps) {
                 : images.stopped
             }
             alt={status.statusLabel}
-            width={40}
-            height={40}
+            width={52}
+            height={52}
             className="object-contain"
             unoptimized={isActive && status.state !== "completed"}
             priority
           />
         </div>
 
-        {/* Progress Circle */}
-        <div className="relative w-14 h-14">
-          <svg className="w-14 h-14 -rotate-90" viewBox="0 0 64 64">
-            <circle
-              cx="32"
-              cy="32"
-              r={radius}
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="3"
-              className="text-border"
-            />
-            <circle
-              cx="32"
-              cy="32"
-              r={radius}
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="3"
-              strokeLinecap="round"
-              className={colors.progress}
-              style={{
-                strokeDasharray: circumference,
-                strokeDashoffset: offset,
-                transition: "stroke-dashoffset 0.5s ease-in-out",
-              }}
-            />
-          </svg>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-2xl font-bold">{Math.round(status.progress)}%</span>
+        {/* Right side - Progress Circle & Info */}
+        <div className="flex flex-col items-center justify-center flex-1">
+          {/* Progress Circle */}
+          <div className="relative w-16 h-16">
+            <svg className="w-16 h-16 -rotate-90" viewBox="0 0 64 64">
+              <circle
+                cx="32"
+                cy="32"
+                r={radius}
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="3"
+                className="text-border"
+              />
+              <circle
+                cx="32"
+                cy="32"
+                r={radius}
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="3"
+                strokeLinecap="round"
+                className={colors.progress}
+                style={{
+                  strokeDasharray: circumference,
+                  strokeDashoffset: offset,
+                  transition: "stroke-dashoffset 0.5s ease-in-out",
+                }}
+              />
+            </svg>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span className="text-2xl font-bold">{Math.round(status.progress)}%</span>
+            </div>
           </div>
+
+          {/* Time Info - Below progress */}
+          <div className="text-xs mt-1 text-center">
+            <div className="flex flex-col gap-0.5">
+              <span className="text-muted-foreground">Elapsed</span>
+              <span className={isActive ? `${colors.text} font-bold` : "text-muted-foreground"}>
+                {isActive ? `${status.elapsedMinutes}min` : "-"}
+              </span>
+            </div>
+          </div>
+
+          {/* Helper Text */}
+          {status.helperText && (
+            <div className={`text-xs mt-0.5 ${colors.text}`}>
+              {status.helperText}
+            </div>
+          )}
         </div>
       </div>
-
-      {/* Time Info */}
-      <div className="text-base">
-        <div className="flex items-center gap-1">
-          <span className="text-muted-foreground">Elapsed</span>
-          <span className={isActive ? `${colors.text} font-bold` : "text-muted-foreground"}>
-            {isActive ? `${status.elapsedMinutes}min` : "-"}
-          </span>
-        </div>
-      </div>
-
-      {/* Helper Text */}
-      {status.helperText && (
-        <div className={`text-base mt-1 ${colors.text}`}>
-          {status.helperText}
-        </div>
-      )}
     </div>
   );
 }
