@@ -2,23 +2,23 @@ import { LaundryGrid } from "@/components/laundry-grid";
 
 export default function Page() {
   return (
-    <main className="min-h-screen px-16 py-12 relative">
-      {/* Laundry cards - left side */}
-      <div className="max-w-3xl">
-        <LaundryGrid />
-      </div>
-      
-      {/* Title and Portal instruction - bottom right */}
-      <div className="fixed bottom-12 right-16 text-left font-helvetica text-black">
-        <h1 className="text-4xl font-bold tracking-wide text-foreground mb-6">
+    <main className="min-h-screen px-16 py-8 flex flex-col">
+      {/* Title and Instructions - Top */}
+      <div className="font-helvetica text-black mb-8">
+        <h1 className="text-3xl font-bold tracking-wide text-foreground mb-4">
           LAUNDRY_ROOM
         </h1>
-        <p className="text-lg">
+        <p className="text-sm">
           メニューに戻るにはリモコンボタンの【PORTAL】を押してください
         </p>
-        <p className="text-base mt-1">
+        <p className="text-sm mt-0.5">
           Press the【PORTAL】button on the remote to return to the menu.
         </p>
+      </div>
+
+      {/* Laundry cards - centered */}
+      <div className="flex-1 flex items-center justify-center">
+        <LaundryGrid />
       </div>
     </main>
   );

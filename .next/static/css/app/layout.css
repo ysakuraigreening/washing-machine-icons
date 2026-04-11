@@ -568,6 +568,12 @@ video {
 .mb-6 {
   margin-bottom: 1.5rem;
 }
+.mb-8 {
+  margin-bottom: 2rem;
+}
+.mt-0\.5 {
+  margin-top: 0.125rem;
+}
 .flex {
   display: flex;
 }
@@ -585,6 +591,9 @@ video {
 }
 .max-w-3xl {
   max-width: 48rem;
+}
+.flex-1 {
+  flex: 1 1 0%;
 }
 .-rotate-90 {
   --tw-rotate: -90deg;
@@ -692,6 +701,10 @@ video {
   padding-top: 5rem;
   padding-bottom: 5rem;
 }
+.py-8 {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
 .text-left {
   text-align: left;
 }
@@ -720,6 +733,10 @@ video {
 .text-xl {
   font-size: 1.25rem;
   line-height: 1.75rem;
+}
+.text-3xl {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
 }
 .font-bold {
   font-weight: 700;
