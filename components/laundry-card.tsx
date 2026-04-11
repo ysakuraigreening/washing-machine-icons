@@ -79,7 +79,7 @@ export function LaundryCard({ machine }: LaundryCardProps) {
   const isActive = status.state !== "idle";
 
   return (
-    <div className={`rounded-lg p-2 border-2 w-48 ${colors.border}`}>
+    <div className={`rounded-lg p-2 border-2 w-44 ${colors.border}`}>
       {/* Header - Unit Name & Status Badge */}
       <div className="flex items-center gap-1.5 mb-2">
         <span className="text-xl text-muted-foreground font-bold">{machine.name}</span>
