@@ -12,7 +12,7 @@ export default function Page() {
       <LaundryGrid />
       
       {/* Portal instruction - bottom right */}
-      <div className="fixed bottom-12 right-16 text-right font-helvetica text-black">
+      <div className="fixed bottom-12 right-16 text-left font-helvetica text-black">
         <p className="text-lg">
           メニューに戻るにはリモコンボタンの【PORTAL】を押してください
         </p>
