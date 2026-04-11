@@ -79,19 +79,19 @@ export function LaundryCard({ machine }: LaundryCardProps) {
   const isActive = status.state !== "idle";
 
   return (
-    <div className={`rounded-2xl p-6 border-3 w-72 ${colors.border}`}>
+    <div className={`rounded-xl p-4 border-3 w-64 ${colors.border}`}>
       {/* Header - Unit Name & Status Badge */}
-      <div className="flex items-center gap-4 mb-5">
-        <span className="text-2xl text-muted-foreground font-medium">{machine.name}</span>
-        <span className={`text-xl font-bold px-3 py-1 rounded-full ${colors.badge}`}>
+      <div className="flex items-center gap-3 mb-3">
+        <span className="text-3xl text-muted-foreground font-medium">{machine.name}</span>
+        <span className={`text-2xl font-bold px-2 py-1 rounded-lg ${colors.badge}`}>
           {status.statusLabel}
         </span>
       </div>
 
       {/* Main - Icon & Progress */}
-      <div className="flex items-center gap-6 mb-5">
+      <div className="flex items-center gap-4 mb-4">
         {/* Laundry Icon with border */}
-        <div className="border-2 border-border rounded-lg p-2">
+        <div className="border-2 border-border rounded-lg p-1">
           <Image
             src={
               isActive && status.state !== "completed"
@@ -99,8 +99,8 @@ export function LaundryCard({ machine }: LaundryCardProps) {
                 : images.stopped
             }
             alt={status.statusLabel}
-            width={72}
-            height={72}
+            width={60}
+            height={60}
             className="object-contain"
             unoptimized={isActive && status.state !== "completed"}
             priority
@@ -108,8 +108,8 @@ export function LaundryCard({ machine }: LaundryCardProps) {
         </div>
 
         {/* Progress Circle */}
-        <div className="relative w-24 h-24">
-          <svg className="w-24 h-24 -rotate-90" viewBox="0 0 64 64">
+        <div className="relative w-20 h-20">
+          <svg className="w-20 h-20 -rotate-90" viewBox="0 0 64 64">
             <circle
               cx="32"
               cy="32"
@@ -136,14 +136,14 @@ export function LaundryCard({ machine }: LaundryCardProps) {
             />
           </svg>
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-2xl font-bold">{Math.round(status.progress)}%</span>
+            <span className="text-3xl font-bold">{Math.round(status.progress)}%</span>
           </div>
         </div>
       </div>
 
       {/* Time Info */}
-      <div className="text-xl">
-        <div className="flex items-center gap-3">
+      <div className="text-2xl">
+        <div className="flex items-center gap-2">
           <span className="text-muted-foreground">Elapsed</span>
           <span className={isActive ? `${colors.text} font-bold` : "text-muted-foreground"}>
             {isActive ? `${status.elapsedMinutes}min` : "-"}
@@ -153,7 +153,7 @@ export function LaundryCard({ machine }: LaundryCardProps) {
 
       {/* Helper Text */}
       {status.helperText && (
-        <div className={`text-xl mt-2 ${colors.text}`}>
+        <div className={`text-2xl mt-1 ${colors.text}`}>
           {status.helperText}
         </div>
       )}
