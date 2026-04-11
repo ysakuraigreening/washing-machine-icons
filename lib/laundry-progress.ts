@@ -8,7 +8,8 @@ import type { LaundryRuntimeInput, LaundryState, LaundryStatusResult } from "@/t
 const ON_STABLE_THRESHOLD = 15;
 
 // 通電OFF安定判定の閾値（秒）- 完了判定用
-const OFF_STABLE_THRESHOLD = 90;
+// 30分 = 1800秒
+const OFF_STABLE_THRESHOLD = 1800;
 
 // 候補所要時間（分）
 const COURSE_DURATIONS = [30, 35, 60, 80, 90, 120] as const;
@@ -97,7 +98,22 @@ export function resolveLaundryStatus(input: LaundryRuntimeInput): LaundryStatusR
   // elapsedSeconds > 0 = 以前に稼働を開始したことがある
   const hasEverStarted = elapsedSeconds > 0;
   
-  // 2. idle判定（一度も稼働開始していない場合）
+  // 2. COMPLETE後の待機状態判定（新たな電流感知で復帰）
+  // completed状態でも、新たに通電ON安定が達成されたら running に復帰
+  if (hasEverStarted && offStableSeconds >= OFF_STABLE_THRESHOLD && isPowerOn && onStableSeconds < ON_STABLE_THRESHOLD) {
+    // COMPLETEからWORKINGへ遷移中
+    return {
+      state: "running",
+      progress: 0,
+      elapsedMinutes: 0,
+      remainingMin: null,
+      remainingMax: null,
+      statusLabel: "WORKING",
+      helperText: "Restarted",
+    };
+  }
+
+  // 3. idle判定（一度も稼働開始していない場合）
   if (!hasEverStarted && !isPowerOn) {
     return {
       state: "idle",
@@ -110,8 +126,8 @@ export function resolveLaundryStatus(input: LaundryRuntimeInput): LaundryStatusR
     };
   }
 
-  // 3. completed判定
-  // 一度稼働を開始した後、通電OFFが90秒以上連続で続いたら完了
+  // 4. completed判定
+  // 一度稼働を開始した後、通電OFFが1800秒（30分）以上連続で続いたら完了
   if (hasEverStarted && offStableSeconds >= OFF_STABLE_THRESHOLD) {
     return {
       state: "completed",

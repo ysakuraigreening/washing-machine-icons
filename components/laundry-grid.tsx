@@ -12,7 +12,7 @@ export function LaundryGrid() {
     "/api/laundry",
     fetcher,
     {
-      refreshInterval: 30000,
+      refreshInterval: 5000, // 5秒ごとに更新
       revalidateOnFocus: true,
     }
   );
