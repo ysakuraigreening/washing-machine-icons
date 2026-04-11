@@ -59,9 +59,9 @@ export function LaundryGrid() {
   const unit005 = data.machines.find((m) => m.id === "unit-005");
 
   return (
-    <div className="flex gap-8">
+    <div className="flex gap-6">
       {/* Left column: UNIT_003, UNIT_004, UNIT_005 */}
-      <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-6">
         {unit003 && <LaundryCard machine={unit003} />}
         {unit004 && <LaundryCard machine={unit004} />}
         {unit005 && <LaundryCard machine={unit005} />}
