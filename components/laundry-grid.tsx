@@ -35,9 +35,9 @@ export function LaundryGrid() {
   if (error) {
     return (
       <div className="text-center py-20">
-        <p className="text-red-500">読み込みエラーが発生しました</p>
+        <p className="text-red-500">Loading error</p>
         <p className="text-sm text-muted-foreground mt-2">
-          しばらくしてから再度お試しください
+          Please try again later
         </p>
       </div>
     );
@@ -46,29 +46,39 @@ export function LaundryGrid() {
   if (!data?.machines.length) {
     return (
       <div className="text-center py-20">
-        <p className="text-muted-foreground">登録されている洗濯機がありません</p>
+        <p className="text-muted-foreground">No machines registered</p>
       </div>
     );
   }
 
-  // Split machines: first 2 for top row (reversed: 002 left, 001 right), rest for bottom column
-  const topRow = data.machines.slice(0, 2).reverse();
-  const bottomColumn = data.machines.slice(2);
+  // マシンを取得
+  const unit001 = data.machines.find((m) => m.id === "unit-001");
+  const unit002 = data.machines.find((m) => m.id === "unit-002");
+  const unit003 = data.machines.find((m) => m.id === "unit-003");
+  const unit004 = data.machines.find((m) => m.id === "unit-004");
+  const unit005 = data.machines.find((m) => m.id === "unit-005");
 
   return (
-    <div className="flex flex-col gap-6">
-      {/* Top row - 2 cards (UNIT_002 left, UNIT_001 right) */}
-      <div className="flex gap-6">
-        {topRow.map((machine) => (
-          <LaundryCard key={machine.id} machine={machine} />
-        ))}
+    <div className="flex gap-16 items-start">
+      {/* 左列: UNIT_003〜005 */}
+      <div className="flex flex-col gap-8">
+        {/* UNIT_003は2列目に配置（1列目分のスペースを空ける） */}
+        <div className="flex">
+          <div className="w-[280px]" /> {/* 空白スペース */}
+          {unit003 && <LaundryCard machine={unit003} />}
+        </div>
+        {unit004 && <LaundryCard machine={unit004} />}
+        {unit005 && <LaundryCard machine={unit005} />}
       </div>
-      
-      {/* Bottom column - remaining cards stacked */}
-      <div className="flex flex-col gap-6">
-        {bottomColumn.map((machine) => (
-          <LaundryCard key={machine.id} machine={machine} />
-        ))}
+
+      {/* 中央列: UNIT_002 */}
+      <div className="flex items-start">
+        {unit002 && <LaundryCard machine={unit002} />}
+      </div>
+
+      {/* 右列: UNIT_001 */}
+      <div className="flex items-start">
+        {unit001 && <LaundryCard machine={unit001} />}
       </div>
     </div>
   );
