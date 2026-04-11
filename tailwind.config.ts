@@ -23,6 +23,7 @@ export default {
       },
       fontFamily: {
         sans: ["var(--font-sans)"],
+        helvetica: ["Helvetica", "Arial", "sans-serif"],
       },
     },
   },
