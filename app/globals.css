@@ -3,32 +3,32 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #1a1a1a;
-  --primary: #000000;
-  --primary-foreground: #ffffff;
-  --muted: #f1f5f9;
-  --muted-foreground: #64748b;
+  --background: #f8f7f5;
+  --foreground: #2a2a2a;
+  --primary: #2a2a2a;
+  --primary-foreground: #f8f7f5;
+  --muted: #e8e6e1;
+  --muted-foreground: #8b8b8b;
   --card: #ffffff;
-  --card-foreground: #1a1a1a;
-  --border: #e2e8f0;
-  --success: #22c55e;
+  --card-foreground: #2a2a2a;
+  --border: #d9d7d2;
+  --success: #4a9b6f;
   --success-foreground: #ffffff;
-  --radius: 0.75rem;
+  --radius: 0.5rem;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --primary: #ffffff;
-    --primary-foreground: #000000;
-    --muted: #1e293b;
-    --muted-foreground: #94a3b8;
-    --card: #111111;
-    --card-foreground: #ededed;
-    --border: #27272a;
-    --success: #22c55e;
+    --background: #1a1a1a;
+    --foreground: #e8e6e1;
+    --primary: #e8e6e1;
+    --primary-foreground: #1a1a1a;
+    --muted: #2a2a2a;
+    --muted-foreground: #a0a0a0;
+    --card: #242423;
+    --card-foreground: #e8e6e1;
+    --border: #3a3a3a;
+    --success: #5ab383;
     --success-foreground: #ffffff;
   }
 }
