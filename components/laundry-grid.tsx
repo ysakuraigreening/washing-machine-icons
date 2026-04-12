@@ -12,7 +12,7 @@ export function LaundryGrid() {
     "/api/laundry",
     fetcher,
     {
-      refreshInterval: 5000, // 5秒ごとに更新
+      refreshInterval: 30000, // 30秒ごとに更新（SwitchBot APIレート制限対策）
       revalidateOnFocus: true,
     }
   );
